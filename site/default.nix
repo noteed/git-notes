@@ -9,6 +9,20 @@
 let
   pkgs = import nixpkgs {};
   artefacts = import ../default.nix;
+
+  template = ../../design-system/pandoc/default.html;
+  lua-filter = ../../design-system/pandoc/tachyons.lua;
+
+  to-html = src: pkgs.runCommand "init" {} ''
+    ${pkgs.pandoc}/bin/pandoc \
+      --from markdown \
+      --to html \
+      --standalone \
+      --template ${template} \
+      --lua-filter ${lua-filter} \
+      --output $out \
+      ${src}
+  '';
 in rec
 {
   md.init = pkgs.substituteAll {
@@ -27,19 +41,12 @@ in rec
   template = ../../design-system/pandoc/default.html;
   lua-filter = ../../design-system/pandoc/tachyons.lua;
 
-  html.init = pkgs.runCommand "init" {} ''
-    ${pkgs.pandoc}/bin/pandoc \
-      --from markdown \
-      --to html \
-      --standalone \
-      --template ${template} \
-      --lua-filter ${lua-filter} \
-      --output $out \
-      ${md.init}
-  '';
+  html.index = to-html ./index.md;
+  html.init = to-html md.init;
 
   html.all = pkgs.runCommand "all" {} ''
     mkdir $out
+    cp ${html.index} $out/index.html
     cp ${html.init} $out/init.html
   '';
 }
