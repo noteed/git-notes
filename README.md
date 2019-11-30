@@ -30,10 +30,22 @@ To build the Markdown file corresponding to that same command:
 $ nix-build site/ -A md.init
 ```
 
-To build all the notes, these two commands are equivalent:
+To build all the notes as Markdown, these two commands are equivalent:
 
 ```
-$ nix-build site/ -A all
+$ nix-build site/ -A md.all
+```
+
+To build the HTML file corresponding to that same command:
+
+```
+$ nix-build site/ -A html.init
+```
+
+To build all the notes as HTML, these two commands are equivalent:
+
+```
+$ nix-build site/ -A html.all
 $ nix-build -A site
 ```
 

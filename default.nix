@@ -13,5 +13,5 @@ rec {
     buildInputs = with pkgs; [ git tree ];
   };
 
-  site = (import site/default.nix {}).all;
+  site = (import site/default.nix {}).html.all;
 }

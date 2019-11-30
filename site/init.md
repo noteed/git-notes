@@ -1,5 +1,6 @@
 ---
 title: Git notes
+footer: © Võ Minh Thu, 2019.
 ---
 
 ## git init
