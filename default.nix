@@ -12,4 +12,6 @@ rec {
     builder = scripts/init.sh;
     buildInputs = with pkgs; [ git tree ];
   };
+
+  site = (import site/default.nix {}).all;
 }

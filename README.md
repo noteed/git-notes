@@ -30,10 +30,11 @@ To build the Markdown file corresponding to that same command:
 $ nix-build site/ -A md.init
 ```
 
-To build all the notes:
+To build all the notes, these two commands are equivalent:
 
 ```
 $ nix-build site/ -A all
+$ nix-build -A site
 ```
 
 The generated Markdown files can be seen in the `generated/` directory.
