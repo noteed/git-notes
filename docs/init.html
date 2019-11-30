@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Git notes</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>@import url(/static/css/inter.css);@import url(/static/css/tachyons.min.v4.11.1.css);@import url(/static/css/style.css);@import url(/static/css/styles.css);</style></head><body class="inter"><div class="flex flex-column justify-between min-height-vh-100 mw8 center pa4 lh-copy"><div><header><nav class="flex justify-between align-items-center lh-copy mb4 pv3"><div></div></nav></header><main><article class="mw7"><div class="mb4"><h1 class="f1 lh-title mv2 tracked-tight">Git notes</h1></div><h2 id="git-init" class="f2 lh-title mv2 tracked-tight">git init</h2>
+<pre><code>$ nix-build -A init
+/nix/store/sr8k6bqzxs06lf56zlrlqqp4i0midjpl-init</code></pre>
+<p>In this derivation, we use <code>git init</code> to create a new repository. We run that command passing a non-existing directory as argument (i.e. <code>git init $out/repo</code>), which will be created and turned into a repository.</p>
+<p>Without an argument, it turns the <em>current</em> directory into a repository, which is what is often used in pratice.</p>
+<p>In addition of the repository itself, this derivation also have two files, one with the command output, and one showing the content of the repository (using the <code>tree</code> command).</p>
+<p>If the command was run interactively, it would look like:</p>
+<pre><code>$ git init /nix/store/sr8k6bqzxs06lf56zlrlqqp4i0midjpl-init/repo
+Initialized empty Git repository in /nix/store/sr8k6bqzxs06lf56zlrlqqp4i0midjpl-init/repo/.git/
+</code></pre>
+<pre><code>$ tree -anF /nix/store/sr8k6bqzxs06lf56zlrlqqp4i0midjpl-init/repo
+/nix/store/sr8k6bqzxs06lf56zlrlqqp4i0midjpl-init/repo
+`-- .git/
+    |-- HEAD
+    |-- branches/
+    |-- config
+    |-- description
+    |-- hooks/
+    |   |-- applypatch-msg.sample*
+    |   |-- commit-msg.sample*
+    |   |-- fsmonitor-watchman.sample*
+    |   |-- post-update.sample*
+    |   |-- pre-applypatch.sample*
+    |   |-- pre-commit.sample*
+    |   |-- pre-push.sample*
+    |   |-- pre-rebase.sample*
+    |   |-- pre-receive.sample*
+    |   |-- prepare-commit-msg.sample*
+    |   `-- update.sample*
+    |-- info/
+    |   `-- exclude
+    |-- objects/
+    |   |-- info/
+    |   `-- pack/
+    `-- refs/
+        |-- heads/
+        `-- tags/
+
+10 directories, 15 files
+</code></pre>
+<p>The complete script run in this derivation:</p>
+<pre><code># Demonstrate git init.
+
+# This line is a Nix thing to let us use basic things such as `mkdir`.
+source $stdenv/setup
+
+# Set a few Git environment variables to always create exactly the same
+# repository.
+export GIT_AUTHOR_NAME=&quot;Alice&quot;
+export GIT_AUTHOR_EMAIL=&quot;alice@example.com&quot;
+export GIT_AUTHOR_DATE=&quot;1970-01-01T00:00:00&quot;
+export GIT_COMMITTER_NAME=&quot;$GIT_AUTHOR_NAME&quot;
+export GIT_COMMITTER_DATE=&quot;$GIT_AUTHOR_DATE&quot;
+export GIT_COMMITTER_EMAIL=&quot;$GIT_AUTHOR_EMAIL&quot;
+export TZ=&quot;UTC&quot;
+
+mkdir $out
+
+# Create a new repository in $out/repo, capturing the output.
+git init $out/repo &gt; $out/output.txt
+
+# Capture the structure of the newly created repository.
+#   -a shows hidden files (in particular our .git/ directory).
+#   -n disables colors.
+#   -F adds a slash in directory names.
+tree -anF $out/repo &gt; $out/tree.txt
+</code></pre></article></main></div><footer class="pv4"><p class="inline-flex bt b--black-50 pt4 lh-copy">© Võ Minh Thu, 2019.</p></footer></div></body></html>
