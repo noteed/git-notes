@@ -5,7 +5,19 @@ demonstrated, they are run using Nix to capture the results, which are then
 embedded into Markdown files. Those files can be further processed to build
 HTML files, e.g. with Pandoc.
 
-For instance to build a repository demonstrating the [`git
+
+## List of notes
+
+Each note starts with the command to build its associated Nix derivation. The
+available notes are:
+
+- [`git init`](generated/init.md)
+
+
+## Building
+
+Each repository and associated documentation can be built separately. For
+instance, to build a repository demonstrating the [`git
 init`](generated/init.md) command, one can run:
 
 ```
