@@ -10,8 +10,15 @@ let
   pkgs = import nixpkgs {};
   artefacts = import ../default.nix;
 
-  template = ../../design-system/pandoc/default.html;
-  lua-filter = ../../design-system/pandoc/tachyons.lua;
+  design-system = pkgs.fetchFromGitHub {
+    owner = "hypered";
+    repo = "design-system";
+    rev = "a35d3a3fc099456bbe3696171c9d05fedf097b68";
+    sha256 = "0r4cmnx8h8qac1m8hxvrf14ihnnc4kykz7zhn02d6s2gfvkgibhb";
+  };
+
+  template = (import design-system {}).template;
+  lua-filter = (import design-system {}).lua-filter;
 
   to-html = src: pkgs.runCommand "init" {} ''
     ${pkgs.pandoc}/bin/pandoc \
@@ -37,9 +44,6 @@ in rec
     mkdir $out
     cp ${md.init} $out/init.md
   '';
-
-  template = ../../design-system/pandoc/default.html;
-  lua-filter = ../../design-system/pandoc/tachyons.lua;
 
   html.index = to-html ./index.md;
   html.init = to-html md.init;
