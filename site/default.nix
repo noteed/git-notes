@@ -12,26 +12,15 @@ let
 
   design-system = pkgs.fetchFromGitHub {
     owner = "hypered";
-    repo = "design-system";
-    rev = "a35d3a3fc099456bbe3696171c9d05fedf097b68";
-    sha256 = "0r4cmnx8h8qac1m8hxvrf14ihnnc4kykz7zhn02d6s2gfvkgibhb";
+    repo = "design";
+    rev = "00ec56920f1c86baa5ea0fdf96e5be79ce253fc6";
+    sha256 = "04i1hbfvsd068zgrlxgppia9ryxv2l33h00aaj9l0grkcldlkr8c";
   };
+  inherit (import design-system {}) to-html;
 
-  template = (import design-system {}).template;
-  lua-filter = (import design-system {}).lua-filter;
-
-  to-html = src: pkgs.runCommand "init" {} ''
-    ${pkgs.pandoc}/bin/pandoc \
-      --from markdown \
-      --to html \
-      --standalone \
-      --template ${template} \
-      --lua-filter ${lua-filter} \
-      --output $out \
-      ${src}
-  '';
 in rec
 {
+  md.index = ./index.md;
   md.init = pkgs.substituteAll {
     src = ./init.md;
     result = artefacts.init;
@@ -39,15 +28,14 @@ in rec
     inittree = builtins.readFile (artefacts.init + "/tree.txt");
     script = builtins.readFile ../scripts/init.sh;
   };
-
   md.all = pkgs.runCommand "all" {} ''
     mkdir $out
+    cp ${md.index} $out/index.md
     cp ${md.init} $out/init.md
   '';
 
-  html.index = to-html ./index.md;
+  html.index = to-html md.index;
   html.init = to-html md.init;
-
   html.all = pkgs.runCommand "all" {} ''
     mkdir $out
     cp ${html.index} $out/index.html
