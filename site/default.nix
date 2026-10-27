@@ -3,26 +3,16 @@
 # Example build instruction:
 #  nix-build site/ -A md.init
 
-{ nixpkgs ? <nixpkgs>
-}:
-
 let
-  pkgs = import nixpkgs {};
+  sources = import ../nix/26.05/nix/sources.nix;
+  pkgs = import sources.nixpkgs {};
   artefacts = import ../default.nix;
 
-  design-system = pkgs.fetchFromGitHub {
-    owner = "hypered";
-    repo = "design";
-    rev = "00ec56920f1c86baa5ea0fdf96e5be79ce253fc6";
-    sha256 = "04i1hbfvsd068zgrlxgppia9ryxv2l33h00aaj9l0grkcldlkr8c";
-  };
-  inherit (import design-system {}) to-html;
-
+  inherit (import sources.hypered-design) to-html;
 in rec
 {
   md.index = ./index.md;
-  md.init = pkgs.substituteAll {
-    src = ./init.md;
+  md.init = pkgs.replaceVars ./init.md {
     result = artefacts.init;
     initoutput = builtins.readFile (artefacts.init + "/output.txt");
     inittree = builtins.readFile (artefacts.init + "/tree.txt");

@@ -4,7 +4,8 @@
 #   nix-build -A init
 
 let
-  pkgs = import <nixpkgs> {};
+  sources = import ./nix/26.05/nix/sources.nix;
+  pkgs = import sources.nixpkgs {};
 in
 rec {
   init = pkgs.stdenv.mkDerivation {
@@ -32,5 +33,5 @@ rec {
     ${pkgs.tree}/bin/tree -a ${first-commit} > $out
   '';
 
-  site = (import site/default.nix {}).html.all;
+  site = (import site/default.nix).html.all;
 }
